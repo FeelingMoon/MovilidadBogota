@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +40,7 @@ public class PersonaController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("CREATED (CODE 201)");
 	}
 
-	@PostMapping(path = "/AddVehicle")
+	@PutMapping(path = "/AddVehicle")
 	public ResponseEntity<String> addVehicle(@RequestParam Integer documento, @RequestParam String placa,
 			@RequestParam String color) {
 		Optional<Persona> tmp = persona.findByDocumento(documento);
@@ -58,7 +59,7 @@ public class PersonaController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("CREATED VEHICLE (CODE 202)");
 	}
 
-	@PostMapping(path = "/Update")
+	@PutMapping(path = "/Update")
 	public ResponseEntity<String> update(@RequestParam Integer id, @RequestParam String nombre,
 			@RequestParam Integer documento, @RequestParam LocalDate fechaExpedicion) {
 		Optional<Persona> tmp = persona.findById(id);
@@ -102,7 +103,7 @@ public class PersonaController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("DELETED (CODE 202)");
 	}
 
-	@PostMapping("/TransferVehicle")
+	@PutMapping("/TransferVehicle")
 	public ResponseEntity<String> transferVehicle(@RequestParam String placa, @RequestParam Integer docOrigen,
 			@RequestParam Integer docDestino) {
 		Optional<Persona> p1 = persona.findByDocumento(docOrigen);

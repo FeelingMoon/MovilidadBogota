@@ -2,6 +2,9 @@ package co.edu.unbosque.MovilidadAPI.persistence;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,10 +29,12 @@ public class Vehiculo {
 	private String color;
 
 	@ManyToOne
-	@JoinColumn(name = "persona_id", nullable = false)
+	@JoinColumn(name = "persona_id")
+	@JsonBackReference
 	private Persona persona;
 
-	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JsonManagedReference
+	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private List<Multa> multas;
 
 	public Integer getId() {

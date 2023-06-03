@@ -10,16 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unbosque.MovilidadAPI.persistence.Multa;
-import co.edu.unbosque.MovilidadAPI.persistence.MultasEstaticas;
+import co.edu.unbosque.MovilidadAPI.persistence.Persona;
 import co.edu.unbosque.MovilidadAPI.persistence.Vehiculo;
 import co.edu.unbosque.MovilidadAPI.repository.VehiculoRepository;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -31,11 +30,15 @@ public class VehiculoController {
 
 	@DeleteMapping(path = "/Delete")
 	public ResponseEntity<String> delete(@RequestParam String placa) {
-		Optional<Vehiculo> pr = vehiculo.findByPlaca(placa);
-		if (!pr.isPresent()) {
+		Optional<Vehiculo> vh = vehiculo.findByPlaca(placa);
+		Persona pr = null;
+		if (!vh.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND (CODE 404)");
 		}
-		vehiculo.delete(pr.get());
+		Vehiculo tVh = vh.get();
+		pr = tVh.getPersona();
+		pr.getVehiculos().remove(tVh);
+		vehiculo.delete(tVh);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("DELETED (CODE 202)");
 	}
 
@@ -57,7 +60,7 @@ public class VehiculoController {
 		return ResponseEntity.status(HttpStatus.FOUND).body(tmp.get());
 	}
 
-	@PostMapping("/Update")
+	@PutMapping("/Update")
 	public ResponseEntity<String> update(@RequestParam String placa, @RequestParam String color) {
 		Optional<Vehiculo> tmp = vehiculo.findByPlaca(placa);
 		if (!tmp.isPresent()) {
@@ -70,23 +73,23 @@ public class VehiculoController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("UPDATED (CODE 202)");
 	}
 
-	@PostMapping(path = "/AddMulta")
-	public ResponseEntity<String> addMulta(@RequestParam String placa, @RequestBody MultasEstaticas multa) {
+	@PutMapping(path = "/AddMulta")
+	public ResponseEntity<String> addMulta(@RequestParam String placa, @RequestParam String codigo,
+			@RequestParam String descripcion, @RequestParam String valor, @RequestParam LocalDate fecha) {
 		Optional<Vehiculo> tmp = vehiculo.findByPlaca(placa);
 		if (!tmp.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND (CODE 404)");
 		}
 		Vehiculo vh = tmp.get();
 		Multa m = new Multa();
-		m.setCodigo(multa.getCodigo());
-		m.setDescripcion(multa.getDescripcion());
-		m.setFechaIngreso(LocalDate.now());
+		m.setCodigo(codigo);
+		m.setDescripcion(descripcion);
+		m.setFechaIngreso(fecha);
 		m.setPagado(false);
-		m.setValor(multa.getMulta());
+		m.setValor(valor);
 		m.setVehiculo(vh);
 		vh.getMultas().add(m);
 		vehiculo.save(vh);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("CREATED PENALTY FEE (CODE 202)");
 	}
-
 }
