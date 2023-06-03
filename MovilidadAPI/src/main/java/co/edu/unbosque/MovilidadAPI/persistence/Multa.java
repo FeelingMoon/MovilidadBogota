@@ -30,7 +30,7 @@ public class Multa {
 	private boolean pagado;
 
 	@ManyToOne
-	@JoinColumn(name = "vehiculo_id")
+	@JoinColumn(name = "vehiculo_id", nullable = false)
 	private Vehiculo vehiculo;
 
 	public Integer getId() {

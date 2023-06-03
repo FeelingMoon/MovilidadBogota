@@ -2,8 +2,10 @@ package co.edu.unbosque.MovilidadAPI.persistence;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,10 +26,10 @@ public class Vehiculo {
 	private String color;
 
 	@ManyToOne
-	@JoinColumn(name = "persona_id")
+	@JoinColumn(name = "persona_id", nullable = false)
 	private Persona persona;
 
-	@OneToMany(mappedBy = "vehiculo")
+	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Multa> multas;
 
 	public Integer getId() {
