@@ -60,23 +60,20 @@ public class PersonaController {
 	}
 
 	@PutMapping(path = "/Update")
-	public ResponseEntity<String> update(@RequestParam Integer id, @RequestParam String nombre,
-			@RequestParam Integer documento, @RequestParam LocalDate fechaExpedicion) {
-		Optional<Persona> tmp = persona.findById(id);
+	public ResponseEntity<String> update(@RequestParam Integer documento, @RequestParam String nombre) {
+		Optional<Persona> tmp = persona.findByDocumento(documento);
 		if (!tmp.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND (CODE 206)");
 		} else {
 			Persona pr = tmp.get();
 			pr.setNombre(nombre);
-			pr.setDocumento(documento);
-			pr.setFechaExpedicion(fechaExpedicion);
 			persona.save(pr);
 		}
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("UPDATED (CODE 202)");
 	}
 
 	@GetMapping(path = "/GetAll")
-	public ResponseEntity<Iterable<Persona>> getAll() {
+	public ResponseEntity<List<Persona>> getAll() {
 		List<Persona> all = (List<Persona>) persona.findAll();
 		if (all.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(all);
