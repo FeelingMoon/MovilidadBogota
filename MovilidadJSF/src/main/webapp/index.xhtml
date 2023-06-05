@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Movilidad bogota</title>
+	<link href="webjars/bootstrap/5.2.3/css/bootstrap.min.css"
+		rel="stylesheet" />
+	<link rel="stylesheet" href="styles/Style.css" />
+</h:head>
+<body>
+	<div class="text-center">
+		<div class="card m-3">
+			<p:graphicImage id="img" value="images/logo.png"
+				styleClass="responsive-image size-logo" />
+		</div>
+		<div class="card m-3">
+			<h:form id="pers">
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar>
+					<p:toolbarGroup>
+						<p:menuButton value="Descargar pdf"
+							buttonStyleClass="ui-button-outlined" icon="pi pi-upload">
+							<p:menuitem value="Personas con sus vehiculos">
+								<p:fileDownload value="#{PDFBean.filePV}" />
+							</p:menuitem>
+							<p:menuitem value="Personas con sus multas">
+								<p:fileDownload value="#{PDFBean.filePM}" />
+							</p:menuitem>
+							<p:menuitem value="Todas las multas">
+								<p:fileDownload value="#{PDFBean.fileM}" />
+							</p:menuitem>
+							<p:menuitem value="Todas las multas posibles">
+								<p:fileDownload value="#{PDFBean.fileMS}" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:toolbarGroup>
+					<p:toolbarGroup align="right">
+						<p:commandButton value="Nueva persona" icon="pi pi-plus"
+							oncomplete="PF('addPers').show()" styleClass="ui-button-success"
+							style="margin-right: .5rem" />
+						<p:commandButton value="Buscar por vehiculo" icon="pi pi-search"
+							oncomplete="PF('searchVehi').show()"
+							styleClass="ui-button-success" style="margin-right: .5rem" />
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:dataTable id="dt-personas-v" widgetVar="dtPersonas" var="persona"
+					value="#{personasBean.personas}" reflow="true" paginator="true"
+					rows="10" paginatorPosition="bottom">
+					<f:facet name="header">
+						<div>
+							<span style="font-weight: bold">PERSONAS</span> <span
+								class="filter-container ui-input-icon-left"> </span>
+						</div>
+					</f:facet>
+
+					<p:column headerText="Id" sortBy="#{persona.id}"
+						filterBy="#{persona.id}" width="5%">
+						<h:outputText value="#{persona.id}" />
+					</p:column>
+					<p:column headerText="Nombre" sortBy="#{persona.nombre}"
+						filterBy="#{persona.nombre}" width="20%">
+						<h:outputText value="#{persona.nombre}" />
+					</p:column>
+					<p:column headerText="Documento" sortBy="#{persona.documento}"
+						filterBy="#{persona.documento}" width="10%">
+						<h:outputText value="#{persona.documento}"
+							style="font-weight: 700" />
+					</p:column>
+					<p:column headerText="Fecha de expedicion"
+						sortBy="#{persona.fechaExpedicion}" width="10%">
+						<h:outputText value="#{persona.fechaExpedicion}" />
+					</p:column>
+					<p:column headerText="Fecha de nacimiento"
+						sortBy="#{persona.fechaNacimiento}" width="10%">
+						<h:outputText value="#{persona.fechaNacimiento}" />
+					</p:column>
+					<p:column headerText="Vehiculos (Placa, Marca, Color)" width="30%"
+						sortBy="#{persona.vehiculos.size()}">
+						<p:dataTable value="#{persona.vehiculos}" var="vehiculos">
+							<p:column headerText="Placa">
+								<h:outputText value="#{vehiculos.placa}" />
+							</p:column>
+							<p:column headerText="Marca">
+								<h:outputText value="#{vehiculos.marca}" />
+							</p:column>
+							<p:column headerText="Color">
+								<h:outputText value="#{vehiculos.color}" />
+							</p:column>
+						</p:dataTable>
+					</p:column>
+					<p:column exportable="false" width="8%">
+						<p:commandButton icon="pi pi-pencil"
+							styleClass="edit-button rounded-button ui-button-success mx-2"
+							action="#{personasBean.selecAndPass(persona)}" />
+						<p:commandButton class="ui-button-warning rounded-button"
+							icon="pi pi-trash" oncomplete="PF('delPers').show()"
+							action="#{personasBean.guardarSelec(persona)}" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+			<h:form id="dlg-add">
+				<p:dialog header="Agregar persona" modal="true" widgetVar="addPers"
+					responsive="true">
+					<div class="container dialog-content">
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="name" class="my-2">Nombre</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:inputText id="name" class="my-2" value="#{personasBean.nombre}"
+									required="true" requiredMessage="El nombre es obligatorio" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="document">Documento</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:inputNumber id="document" value="#{personasBean.documento}"
+									required="true" thousandSeparator=""/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="fechaE" class="my-2">Fecha de expedicion</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:datePicker id="fechaE" class="my-2" maxdate="#{personasBean.hoy}"
+									value="#{personasBean.fechaExpedicion}" readonlyInput="true"
+									monthNavigator="true" yearNavigator="true" required="true" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="fechaN">Fecha de nacimiento</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:datePicker id="fechaN"
+									value="#{personasBean.fechaNacimiento}"
+									maxdate="#{personasBean.fechaMaxima}" readonlyInput="true"
+									monthNavigator="true" yearNavigator="true" required="true" />
+							</div>
+						</div>
+					</div>
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="pi pi-check"
+							actionListener="#{personasBean.add}"
+							oncomplete="PF('addPers').hide()"
+							update=":pers:dt-personas-v @this" />
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('addPers').hide()" class="ui-button-secondary"
+							type="button" update="@this" />
+					</f:facet>
+				</p:dialog>
+			</h:form>
+			<h:form id="dlg-src">
+				<p:dialog header="Buscar por vehiculo" modal="true"
+					widgetVar="searchVehi" responsive="true">
+					<div class="dialog-content">
+						<div class="container">
+						<div class="row">
+							<div class="col">
+								<p:dataTable value="#{personasBean.vehiculos()}" var="v">
+									<p:column headerText="Placa" filterBy="#{v.placa}" sortBy="#{v.placa}">
+										<h:outputText value="#{v.placa}" />
+									</p:column>
+									<p:column headerText="Marca" filterBy="#{v.marca}" sortBy="#{v.marca}">
+										<h:outputText value="#{v.marca}" />
+									</p:column>
+									<p:column headerText="Color" filterBy="#{v.color}" sortBy="#{v.color}">
+										<h:outputText value="#{v.color}" />
+									</p:column>
+									<p:column>
+										<p:commandButton icon="pi pi-search"
+											styleClass="edit-button rounded-button ui-button-success mx-2"
+											action="#{personasBean.selecVAndPass(v)}" />
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+					<f:facet name="footer">
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('searchVehi').hide()" class="ui-button-secondary"
+							type="button" update="@this" />
+					</f:facet>
+					</div>
+				</p:dialog>
+			</h:form>
+			<h:form id="dlg-del">
+				<p:confirmDialog widgetVar="delPers" showEffect="fade" width="300"
+					message="Seguro que desea eliminar la persona?" header="Eliminar"
+					severity="warn">
+					<p:commandButton value="Si" icon="pi pi-check"
+						action="#{personasBean.delete()}"
+						oncomplete="PF('delPers').hide()" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary" icon="pi pi-times"
+						onclick="PF('delPers').hide()" />
+				</p:confirmDialog>
+			</h:form>
+		</div>
+	</div>
+</body>
+</html>

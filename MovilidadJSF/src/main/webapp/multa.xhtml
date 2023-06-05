@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Movilidad bogota</title>
+	<link href="webjars/bootstrap/5.2.3/css/bootstrap.min.css"
+		rel="stylesheet" />
+	<link rel="stylesheet" href="styles/Style.css" />
+</h:head>
+<body>
+	<div class="text-center">
+		<div class="card m-3">
+			<p:graphicImage id="img" value="images/logo.png"
+				styleClass="responsive-image size-logo" />
+		</div>
+		<div class="card m-3">
+			<h:form id="mult">
+				<p:growl id="messages" showDetail="true" />
+				<div class="card m-3">
+					<p:toolbar>
+						<p:toolbarGroup align="right">
+							<p:commandButton value="Editar vehiculo" icon="pi pi-plus"
+								oncomplete="PF('updVeh').show()" styleClass="ui-button-success"
+								style="margin-right: .5rem" />
+						</p:toolbarGroup>
+					</p:toolbar>
+					<p:dataTable id="dt-multa" widgetVar="dtMulta"
+						value="#{multasBean.vehiculo}" var="vehiculo">
+						<p:column headerText="Id">
+							<h:outputText value="#{vehiculo.id}" />
+						</p:column>
+						<p:column headerText="Placa">
+							<h:outputText value="#{vehiculo.placa}" />
+						</p:column>
+						<p:column headerText="Color">
+							<h:outputText value="#{vehiculo.color}" />
+						</p:column>
+						<p:column headerText="Marca">
+							<h:outputText value="#{vehiculo.marca}" />
+						</p:column>
+					</p:dataTable>
+				</div>
+				<p:toolbar>
+					<p:toolbarGroup align="right">
+						<p:commandButton value="Multar" icon="pi pi-plus"
+							oncomplete="PF('addMult').show()" styleClass="ui-button-success"
+							style="margin-right: .5rem" />
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:dataTable id="dt-multas-v" widgetVar="dtMultas" var="multa"
+					value="#{multasBean.vehiculo.multas}" reflow="true"
+					paginator="true" rows="10" paginatorPosition="bottom">
+					<f:facet name="header">
+						<div>
+							<span style="font-weight: bold">MULTAS</span> <span
+								class="filter-container ui-input-icon-left"> </span>
+						</div>
+					</f:facet>
+
+					<p:column headerText="Id" sortBy="#{multa.id}"
+						filterBy="#{multa.id}" width="5%">
+						<h:outputText value="#{multa.id}" />
+					</p:column>
+					<p:column headerText="Codigo" sortBy="#{multa.codigo}"
+						filterBy="#{multa.codigo}" width="20%">
+						<h:outputText value="#{multa.codigo}" />
+					</p:column>
+					<p:column headerText="Valor" sortBy="#{multa.valor}" width="20%">
+						<h:outputText value="#{multa.valor}" />
+					</p:column>
+					<p:column headerText="Fecha" sortBy="#{multa.fechaIngreso}"
+						width="20%">
+						<h:outputText value="#{multa.fechaIngreso}" />
+					</p:column>
+					<p:column headerText="Pagado" sortBy="#{multa.pagado}" width="20%">
+						<h:outputText value="#{multa.pagado}" />
+					</p:column>
+					<p:column exportable="false" width="8%">
+						<p:commandButton icon="pi pi-pencil"
+							styleClass="edit-button rounded-button ui-button-success mx-2"
+							action="#{multasBean.guardarSelec(multa)}"
+							oncomplete="PF('pagMult').show()" />
+						<p:commandButton class="ui-button-warning rounded-button"
+							icon="pi pi-trash" oncomplete="PF('delMult').show()"
+							action="#{multasBean.guardarSelec(multa)}" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+			<h:form id="dlg-upd">
+				<p:dialog header="Editar vehiculo" modal="true" widgetVar="updVeh"
+					responsive="true">
+					<div class="container dialog-content">
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="name" class="my-2">Nueva marca</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:inputText id="name" class="my-2" value="#{multasBean.marca}"
+									required="true" requiredMessage="La marca es obligatoria" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="color">Nuevo color</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:inputText id="color" value="#{multasBean.color}"
+									required="true" requiredMessage="El color es obligatorio" />
+							</div>
+						</div>
+					</div>
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="pi pi-check"
+							actionListener="#{multasBean.update}"
+							oncomplete="PF('updVeh').hide()" />
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('updVeh').hide()" class="ui-button-secondary"
+							type="button" update="@this" />
+					</f:facet>
+				</p:dialog>
+			</h:form>
+			<h:form id="dlg-add">
+				<p:dialog header="Multar" modal="true" widgetVar="addMult"
+					responsive="true">
+					<div class="dialog-content">
+						<div class="container">
+							<div class="row">
+								<div class="col">
+									<p:dataTable value="#{multasBean.multasEstaticas()}" var="m">
+										<p:column headerText="Codigo" filterBy="#{m.codigo}"
+											sortBy="#{m.codigo}">
+											<h:outputText value="#{m.codigo}" />
+										</p:column>
+										<p:column headerText="Descripcion" filterBy="#{m.descripcion}"
+											sortBy="#{m.descripcion}">
+											<h:outputText value="#{m.descripcion}" />
+										</p:column>
+										<p:column headerText="Valor" filterBy="#{m.multa}"
+											sortBy="#{m.multa}">
+											<h:outputText value="#{m.multa}" />
+										</p:column>
+										<p:column headerText="Inmovilizacion"
+											sortBy="#{m.inmovilizacion}">
+											<h:outputText value="#{m.inmovilizacion}" />
+										</p:column>
+										<p:column>
+											<p:commandButton icon="pi pi-check"
+												styleClass="edit-button rounded-button ui-button-success mx-2"
+												action="#{multasBean.add(m)}"
+												oncomplete="PF('addMult').hide()" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<f:facet name="footer">
+							<p:commandButton value="Cancelar" icon="pi pi-times"
+								onclick="PF('searchVehi').hide()" class="ui-button-secondary"
+								type="button" update="@this" />
+						</f:facet>
+					</div>
+				</p:dialog>
+			</h:form>
+			<h:form id="dlg-del">
+				<p:confirmDialog widgetVar="delMult" showEffect="fade" width="300"
+					message="Seguro que desea eliminar la multa?" header="Eliminar"
+					severity="warn">
+					<p:commandButton value="Si" icon="pi pi-check"
+						action="#{multasBean.delete()}"
+						oncomplete="PF('delMult').hide()" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary" icon="pi pi-times"
+						onclick="PF('delMult').hide()" />
+				</p:confirmDialog>
+			</h:form>
+			<h:form id="dlg-pag">
+				<p:confirmDialog widgetVar="pagMult" showEffect="fade" width="300"
+					message="Seguro que desea cambiar el estado de pagado de la multa?"
+					header="Actualizar" severity="warn">
+					<p:commandButton value="Si" icon="pi pi-check"
+						action="#{multasBean.pagar}" oncomplete="PF('pagMult').hide()" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary" icon="pi pi-times"
+						onclick="PF('pagMult').hide()" />
+				</p:confirmDialog>
+			</h:form>
+		</div>
+	</div>
+</body>
+</html>

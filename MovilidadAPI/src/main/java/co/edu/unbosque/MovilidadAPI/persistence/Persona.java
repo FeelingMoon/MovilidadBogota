@@ -31,6 +31,9 @@ public class Persona {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate fechaExpedicion;
 
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate fechaNacimiento;
+
 	@JsonManagedReference
 	@OneToMany(mappedBy = "persona", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private List<Vehiculo> vehiculos;
@@ -73,6 +76,14 @@ public class Persona {
 
 	public void setVehiculos(List<Vehiculo> vehiculos) {
 		this.vehiculos = vehiculos;
+	}
+
+	public LocalDate getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
 	}
 
 }

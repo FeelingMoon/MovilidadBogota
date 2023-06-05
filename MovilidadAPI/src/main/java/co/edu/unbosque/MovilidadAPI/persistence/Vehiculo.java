@@ -26,6 +26,8 @@ public class Vehiculo {
 	@Column(unique = true)
 	private String placa;
 
+	private String marca;
+
 	private String color;
 
 	@ManyToOne
@@ -75,6 +77,14 @@ public class Vehiculo {
 
 	public void setMultas(List<Multa> multas) {
 		this.multas = multas;
+	}
+
+	public String getMarca() {
+		return marca;
+	}
+
+	public void setMarca(String marca) {
+		this.marca = marca;
 	}
 
 }
