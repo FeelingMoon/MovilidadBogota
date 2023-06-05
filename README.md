@@ -4,8 +4,7 @@
 
 The bogota mobility project has the powers to manage people with their respective vehicles and their respective fines, this within a MySql database, using a spring boot API and a web page with JSF 3.0. finally, if you need instructions to be able to use the application (already executed) you can watch the following video.
 
-### Video
-
+### [Video](https://youtu.be/FobGG7UneU0)
 
 ## Program execution screenshots
 
@@ -24,6 +23,8 @@ The bogota mobility project has the powers to manage people with their respectiv
 ![Example](Resources/tranfDlg.png)
 
 # MovilidadBogota
+
+### [Video](https://youtu.be/FobGG7UneU0)
 
 ## Descripcion
 
