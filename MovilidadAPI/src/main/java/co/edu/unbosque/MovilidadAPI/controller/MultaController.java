@@ -1,5 +1,6 @@
 package co.edu.unbosque.MovilidadAPI.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,12 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unbosque.MovilidadAPI.persistence.Multa;
+import co.edu.unbosque.MovilidadAPI.persistence.Vehiculo;
 import co.edu.unbosque.MovilidadAPI.repository.MultaRepository;
 
 @CrossOrigin(origins = "*")
@@ -42,8 +45,20 @@ public class MultaController {
 		if (!pr.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND (CODE 404)");
 		}
-		multa.delete(pr.get());
+		Multa m = pr.get();
+		Vehiculo vh = m.getVehiculo();
+		vh.getMultas().remove(m);
+		multa.delete(m);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("DELETED (CODE 202)");
+	}
+
+	@GetMapping(path = "/GetAll")
+	public ResponseEntity<Iterable<Multa>> getAll() {
+		List<Multa> all = (List<Multa>) multa.findAll();
+		if (all.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(all);
+		}
+		return ResponseEntity.status(HttpStatus.FOUND).body(all);
 	}
 
 }

@@ -61,13 +61,15 @@ public class VehiculoController {
 	}
 
 	@PutMapping("/Update")
-	public ResponseEntity<String> update(@RequestParam String placa, @RequestParam String color) {
+	public ResponseEntity<String> update(@RequestParam String placa, @RequestParam String color,
+			@RequestParam String marca) {
 		Optional<Vehiculo> tmp = vehiculo.findByPlaca(placa);
 		if (!tmp.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND (CODE 206)");
 		} else {
 			Vehiculo pr = tmp.get();
 			pr.setColor(color);
+			pr.setMarca(marca);
 			vehiculo.save(pr);
 		}
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("UPDATED (CODE 202)");

@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+.size-logo{
+	width: 150px;
+	height: 250px;
+}
+
+.dialog-content {
+  max-height: 70vh; /* Ajusta esta altura según tus necesidades */
+  overflow: auto;
+}
+
+.ui-inputtext {
+  min-width: 50px;
+}
+
+.responsive-image{
+	max-width: 100%;
+	height: auto;
+}

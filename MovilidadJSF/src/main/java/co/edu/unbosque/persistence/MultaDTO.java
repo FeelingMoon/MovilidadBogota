@@ -22,9 +22,9 @@ public class MultaDTO {
 			@JsonProperty("vehiculo") VehiculoDTO vehiculo) {
 		super();
 		this.id = id;
-		this.codigo = codigo;
-		this.descripcion = descripcion;
-		this.valor = valor;
+		this.codigo = codigo.replace("%20", " ");
+		this.descripcion = descripcion.replace("%20", " ");
+		this.valor = valor.replace("%20", " ");
 		String[] tmp = fechaIngreso.split("-");
 		this.fechaIngreso = LocalDate.of(Integer.parseInt(tmp[0]), Integer.parseInt(tmp[1]), Integer.parseInt(tmp[2]));
 		this.pagado = pagado;

@@ -18,7 +18,7 @@ public class MultasEstaticasDAO {
 	}
 
 	public List<MultasEstaticasDTO> getAllMultasEstaticas() {
-		String url = "http://localhost:8080/MultasEstaticas/GetAll";
+		String url = "http://localhost:8081/MultasEstaticas/GetAll";
 		ResponseEntity<MultasEstaticasDTO[]> response = restTemplate.getForEntity(url, MultasEstaticasDTO[].class);
 		if (response.getStatusCode().equals(HttpStatus.FOUND)) {
 			return Arrays.asList(response.getBody());
@@ -28,7 +28,7 @@ public class MultasEstaticasDAO {
 
 	public MultasEstaticasDTO getMultasEstaticasByCode(String codigo) {
 		UriComponentsBuilder builder = UriComponentsBuilder
-				.fromHttpUrl("http://localhost:8080/MultasEstaticas/GetOneByCode");
+				.fromHttpUrl("http://localhost:8081/MultasEstaticas/GetOneByCode");
 		builder.queryParam("codigo", codigo);
 		String url = builder.toUriString();
 		ResponseEntity<MultasEstaticasDTO> response = restTemplate.getForEntity(url, MultasEstaticasDTO.class);

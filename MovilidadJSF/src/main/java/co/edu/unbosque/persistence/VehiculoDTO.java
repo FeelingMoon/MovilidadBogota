@@ -11,19 +11,21 @@ public class VehiculoDTO {
 	private Integer id;
 	private String placa;
 	private String color;
+	private String marca;
 	private PersonaDTO persona;
 	private List<MultaDTO> multas;
 
 	@JsonCreator
 	public VehiculoDTO(@JsonProperty("id") Integer id, @JsonProperty("placa") String placa,
 			@JsonProperty("color") String color, @JsonProperty("persona") PersonaDTO persona,
-			@JsonProperty("multas") List<MultaDTO> multas) {
+			@JsonProperty("multas") List<MultaDTO> multas, @JsonProperty("marca") String marca) {
 		super();
 		this.id = id;
-		this.placa = placa;
-		this.color = color;
+		this.placa = placa.replace("%20", " ");
+		this.color = color.replace("%20", " ");
 		this.persona = persona;
 		this.multas = multas;
+		this.marca = marca;
 	}
 
 	public Integer getId() {
@@ -64,6 +66,14 @@ public class VehiculoDTO {
 
 	public void setMultas(List<MultaDTO> multas) {
 		this.multas = multas;
+	}
+
+	public String getMarca() {
+		return marca;
+	}
+
+	public void setMarca(String marca) {
+		this.marca = marca;
 	}
 
 	@Override

@@ -19,61 +19,88 @@ public class VehiculoDAO {
 		restTemplate = new RestTemplate();
 	}
 
-	public String add(Integer documento, String placa, String color) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/Persona/AddVehicle");
-		builder.queryParam("documento", documento);
-		builder.queryParam("placa", placa);
-		builder.queryParam("color", color);
-		String url = builder.toUriString();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, null, String.class);
-		return response.getBody();
+	public String add(Integer documento, String placa, String color, String marca) {
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/Persona/AddVehicle");
+			builder.queryParam("documento", documento);
+			builder.queryParam("placa", placa);
+			builder.queryParam("color", color);
+			builder.queryParam("marca", marca);
+			String url = builder.toUriString();
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, null, String.class);
+			return response.getBody();
+		} catch (Exception e) {
+			return "CONFLICT (CODE 409)";
+		}
 	}
 
-	public String transfer(Integer documento, Integer docOrigen, Integer docDestino) {
-		UriComponentsBuilder builder = UriComponentsBuilder
-				.fromHttpUrl("http://localhost:8080/Persona/TransferVehicle");
-		builder.queryParam("documento", documento);
-		builder.queryParam("docOrigen", docOrigen);
-		builder.queryParam("docDestino", docDestino);
-		String url = builder.toUriString();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, null, String.class);
-		return response.getBody();
+	public String transfer(String placa, Integer docOrigen, Integer docDestino) {
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder
+					.fromHttpUrl("http://localhost:8081/Persona/TransferVehicle");
+			builder.queryParam("placa", placa);
+			builder.queryParam("docOrigen", docOrigen);
+			builder.queryParam("docDestino", docDestino);
+			String url = builder.toUriString();
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, null, String.class);
+			return response.getBody();
+		} catch (Exception e) {
+			return "NOT FOUND (CODE 404)";
+		}
 	}
 
-	public String update(String placa, String color) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/Vehiculo/Update");
-		builder.queryParam("placa", placa);
-		builder.queryParam("color", color);
-		String url = builder.toUriString();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, null, String.class);
-		return response.getBody();
+	public String update(String placa, String color, String marca) {
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/Vehiculo/Update");
+			builder.queryParam("placa", placa);
+			builder.queryParam("color", color);
+			builder.queryParam("marca", marca);
+			String url = builder.toUriString();
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, null, String.class);
+			return response.getBody();
+		} catch (Exception e) {
+			return "NOT FOUND (CODE 404)";
+		}
 	}
 
 	public List<VehiculoDTO> getAll() {
-		String url = "http://localhost:8080/Vehiculo/GetAll";
-		ResponseEntity<VehiculoDTO[]> response = restTemplate.getForEntity(url, VehiculoDTO[].class);
-		if (response.getStatusCode().equals(HttpStatus.FOUND)) {
-			return Arrays.asList(response.getBody());
+		try {
+			String url = "http://localhost:8081/Vehiculo/GetAll";
+			ResponseEntity<VehiculoDTO[]> response = restTemplate.getForEntity(url, VehiculoDTO[].class);
+			if (response.getStatusCode().equals(HttpStatus.FOUND)) {
+				return Arrays.asList(response.getBody());
+			}
+		} catch (Exception e) {
+			return null;
 		}
 		return null;
 	}
 
 	public VehiculoDTO getOneByPlaca(String placa) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/Vehiculo/GetOneByPlaca");
-		builder.queryParam("placa", placa);
-		String url = builder.toUriString();
-		ResponseEntity<VehiculoDTO> response = restTemplate.getForEntity(url, VehiculoDTO.class);
-		if (response.getStatusCode().equals(HttpStatus.FOUND)) {
-			return response.getBody();
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder
+					.fromHttpUrl("http://localhost:8081/Vehiculo/GetOneByPlaca");
+			builder.queryParam("placa", placa);
+			String url = builder.toUriString();
+			ResponseEntity<VehiculoDTO> response = restTemplate.getForEntity(url, VehiculoDTO.class);
+			if (response.getStatusCode().equals(HttpStatus.FOUND)) {
+				return response.getBody();
+			}
+		} catch (Exception e) {
+			return null;
 		}
 		return null;
 	}
 
 	public String delete(String placa) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/Vehiculo/Delete");
-		builder.queryParam("placa", placa);
-		String url = builder.toUriString();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
-		return response.getBody();
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/Vehiculo/Delete");
+			builder.queryParam("placa", placa);
+			String url = builder.toUriString();
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+			return response.getBody();
+		} catch (Exception e) {
+			return "NOT FOUND (CODE 404)";
+		}
 	}
 }

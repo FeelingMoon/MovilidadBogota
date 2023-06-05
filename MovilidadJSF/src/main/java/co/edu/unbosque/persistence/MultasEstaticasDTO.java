@@ -16,9 +16,9 @@ public class MultasEstaticasDTO {
 			@JsonProperty("descripcion") String descripcion, @JsonProperty("multa") String multa,
 			@JsonProperty("inmovilizacion") boolean inmovilizacion) {
 		this.id = id;
-		this.codigo = codigo;
-		this.descripcion = descripcion;
-		this.multa = multa;
+		this.codigo = codigo.replace("%20", " ");
+		this.descripcion = descripcion.replace("%20", " ");
+		this.multa = multa.replace("%20", " ");
 		this.inmovilizacion = inmovilizacion;
 	}
 

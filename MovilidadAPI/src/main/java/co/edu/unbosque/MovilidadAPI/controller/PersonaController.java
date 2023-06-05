@@ -31,32 +31,42 @@ public class PersonaController {
 
 	@PostMapping(path = "/Add")
 	public ResponseEntity<String> add(@RequestParam String nombre, @RequestParam Integer documento,
-			@RequestParam LocalDate fechaExpedicion) {
-		Persona tmp = new Persona();
-		tmp.setNombre(nombre);
-		tmp.setDocumento(documento);
-		tmp.setFechaExpedicion(fechaExpedicion);
-		persona.save(tmp);
-		return ResponseEntity.status(HttpStatus.CREATED).body("CREATED (CODE 201)");
+			@RequestParam LocalDate fechaExpedicion, @RequestParam LocalDate fechaNacimiento) {
+		try {
+			Persona tmp = new Persona();
+			tmp.setNombre(nombre);
+			tmp.setDocumento(documento);
+			tmp.setFechaExpedicion(fechaExpedicion);
+			tmp.setFechaNacimiento(fechaNacimiento);
+			persona.save(tmp);
+			return ResponseEntity.status(HttpStatus.CREATED).body("CREATED (CODE 201)");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("CONFLICT (CODE 409)");
+		}
 	}
 
 	@PutMapping(path = "/AddVehicle")
 	public ResponseEntity<String> addVehicle(@RequestParam Integer documento, @RequestParam String placa,
-			@RequestParam String color) {
-		Optional<Persona> tmp = persona.findByDocumento(documento);
-		if (!tmp.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND (404)");
-		} else {
-			Persona pr = tmp.get();
-			Vehiculo vh = new Vehiculo();
-			vh.setColor(color);
-			vh.setPlaca(placa);
-			vh.setPersona(pr);
-			vh.setMultas(new ArrayList<>());
-			pr.getVehiculos().add(vh);
-			persona.save(pr);
+			@RequestParam String color, @RequestParam String marca) {
+		try {
+			Optional<Persona> tmp = persona.findByDocumento(documento);
+			if (!tmp.isPresent()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND (404)");
+			} else {
+				Persona pr = tmp.get();
+				Vehiculo vh = new Vehiculo();
+				vh.setColor(color);
+				vh.setPlaca(placa);
+				vh.setMarca(marca);
+				vh.setPersona(pr);
+				vh.setMultas(new ArrayList<>());
+				pr.getVehiculos().add(vh);
+				persona.save(pr);
+			}
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("CREATED VEHICLE (CODE 202)");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("CONFLICT (CODE 409)");
 		}
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body("CREATED VEHICLE (CODE 202)");
 	}
 
 	@PutMapping(path = "/Update")

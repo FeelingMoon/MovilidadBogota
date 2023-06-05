@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Movilidad bogota</title>
+	<link href="webjars/bootstrap/5.2.3/css/bootstrap.min.css"
+		rel="stylesheet" />
+	<link rel="stylesheet" href="styles/Style.css" />
+</h:head>
+<body>
+	<div class="text-center">
+		<div class="card m-3">
+			<p:graphicImage id="img" value="images/logo.png"
+				styleClass="responsive-image size-logo" />
+		</div>
+		<div class="card m-3">
+			<h:form id="vehi">
+				<p:growl id="messages" showDetail="true" />
+				<div class="card m-3">
+					<p:toolbar>
+						<p:toolbarGroup align="right">
+							<p:commandButton value="Editar persona" icon="pi pi-plus"
+								oncomplete="PF('updPers').show()" styleClass="ui-button-success"
+								style="margin-right: .5rem" />
+						</p:toolbarGroup>
+					</p:toolbar>
+					<p:dataTable id="dt-persona" widgetVar="dtPerson"
+						value="#{vehiculosBean.persona}" var="persona">
+						<p:column headerText="Id">
+							<h:outputText value="#{persona.id}" />
+						</p:column>
+						<p:column headerText="Nombre">
+							<h:outputText value="#{persona.nombre}" />
+						</p:column>
+						<p:column headerText="Documento">
+							<h:outputText value="#{persona.documento}"
+								style="font-weight: 700" />
+						</p:column>
+						<p:column headerText="Fecha de expedicion">
+							<h:outputText value="#{persona.fechaExpedicion}" />
+						</p:column>
+						<p:column headerText="Fecha de nacimiento">
+							<h:outputText value="#{persona.fechaNacimiento}" />
+						</p:column>
+					</p:dataTable>
+				</div>
+				<p:toolbar>
+					<p:toolbarGroup align="right">
+						<p:commandButton value="Nuevo vehiculo" icon="pi pi-plus"
+							oncomplete="PF('addVehi').show()" styleClass="ui-button-success"
+							style="margin-right: .5rem" />
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:dataTable id="dt-vehiculos-v" widgetVar="dtVehiculos"
+					var="vehiculo" value="#{vehiculosBean.persona.vehiculos}"
+					reflow="true" paginator="true" rows="10" paginatorPosition="bottom">
+					<f:facet name="header">
+						<div>
+							<span style="font-weight: bold">VEHICULOS</span> <span
+								class="filter-container ui-input-icon-left"> </span>
+						</div>
+					</f:facet>
+
+					<p:column headerText="Id" sortBy="#{vehiculo.id}"
+						filterBy="#{vehiculo.id}" width="5%">
+						<h:outputText value="#{vehiculo.id}" />
+					</p:column>
+					<p:column headerText="Placa" sortBy="#{vehiculo.placa}"
+						filterBy="#{vehiculo.placa}" width="20%">
+						<h:outputText value="#{vehiculo.placa}" />
+					</p:column>
+					<p:column headerText="Marca" sortBy="#{vehiculo.marca}"
+						filterBy="#{vehiculo.marca}" width="20%">
+						<h:outputText value="#{vehiculo.marca}" />
+					</p:column>
+					<p:column headerText="Color" sortBy="#{vehiculo.color}" width="20%">
+						<h:outputText value="#{vehiculo.color}" />
+					</p:column>
+					<p:column headerText="Multas (Codigo, Valor, Fecha, Pagado)"
+						width="30%" sortBy="#{vehiculo.multas.size()}">
+						<p:dataTable value="#{vehiculo.multas}" var="multa">
+							<p:column headerText="Codigo">
+								<h:outputText value="#{multa.codigo}" />
+							</p:column>
+							<p:column headerText="Valor">
+								<h:outputText value="#{multa.valor}" />
+							</p:column>
+							<p:column headerText="Fecha">
+								<h:outputText value="#{multa.fechaIngreso}" />
+							</p:column>
+							<p:column headerText="Pagado">
+								<h:outputText value="#{multa.pagado}" />
+							</p:column>
+						</p:dataTable>
+					</p:column>
+					<p:column exportable="false" width="11%">
+						<p:commandButton icon="pi pi-pencil"
+							styleClass="edit-button rounded-button ui-button-success mx-2"
+							action="#{vehiculosBean.selecAndPass(vehiculo)}" />
+						<p:commandButton class="ui-button-warning rounded-button"
+							icon="pi pi-trash" oncomplete="PF('delVehi').show()"
+							action="#{vehiculosBean.guardarSelec(vehiculo)}" />
+						<p:commandButton class="edit-button rounded-button ui-button-success mx-2"
+							icon="pi pi-arrow-right" oncomplete="PF('tranfVehi').show()"
+							action="#{vehiculosBean.guardarSelec(vehiculo)}" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+			<h:form id="dlg-add">
+				<p:dialog header="Agregar vehiculo" modal="true" widgetVar="addVehi"
+					responsive="true">
+					<div class="container dialog-content">
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="name" class="my-2">Placa</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:inputText id="name" class="my-2" value="#{vehiculosBean.placa}"
+									required="true" requiredMessage="El nombre es obligatorio" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="marca">Marca</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:inputText id="marca" value="#{vehiculosBean.marca}"
+									required="true" requiredMessage="La marca es obligatorio" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="color" class="my-2">Color</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:inputText id="color" class="my-2" value="#{vehiculosBean.color}"
+									required="true" requiredMessage="El color es obligatorio" />
+							</div>
+						</div>
+					</div>
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="pi pi-check"
+							actionListener="#{vehiculosBean.add}"
+							oncomplete="PF('addVehi').hide()"
+							update=":vehi:dt-vehiculos-v @this" />
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('addVehi').hide()" class="ui-button-secondary"
+							type="button" update="@this" />
+					</f:facet>
+				</p:dialog>
+			</h:form>
+			<h:form id="dlg-upd">
+				<p:dialog header="Editar persona" modal="true" widgetVar="updPers"
+					responsive="true">
+					<div class="container dialog-content">
+						<div class="row">
+							<div class="col">
+								<p:outputLabel for="name">Nuevo nombre</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:inputText id="name" value="#{vehiculosBean.nombre}"
+									required="true" requiredMessage="El nombre es obligatorio" />
+							</div>
+						</div>
+					</div>
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="pi pi-check"
+							actionListener="#{vehiculosBean.update}"
+							oncomplete="PF('updPers').hide()"/>
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('updPers').hide()" class="ui-button-secondary"
+							type="button" update="@this" />
+					</f:facet>
+				</p:dialog>
+			</h:form>
+			<h:form id="dlg-tranf">
+				<p:dialog header="Transferir vehiculo" modal="true" widgetVar="tranfVehi"
+					responsive="true">
+					<div class="container dialog-content">
+						<div class="row">
+							<div class="col">
+								<p:outputLabel>Documento del destinatario</p:outputLabel>
+							</div>
+							<div class="col">
+								<p:inputNumber value="#{vehiculosBean.documento}" mode="numeric" thousandSeparator=""/>
+							</div>
+						</div>
+					</div>
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="pi pi-check"
+							actionListener="#{vehiculosBean.transfer}"
+							oncomplete="PF('tranfVehi').hide()"/>
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('tranfVehi').hide()" class="ui-button-secondary"
+							type="button" update="@this" />
+					</f:facet>
+				</p:dialog>
+			</h:form>
+			<h:form id="dlg-del">
+				<p:confirmDialog widgetVar="delVehi" showEffect="fade" width="300"
+					message="Seguro que desea eliminar el vehiculo?" header="Eliminar"
+					severity="warn">
+					<p:commandButton value="Si" icon="pi pi-check"
+						action="#{vehiculosBean.delete()}"
+						oncomplete="PF('delVehi').hide()" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary" icon="pi pi-times"
+						onclick="PF('delVehi').hide()" />
+				</p:confirmDialog>
+			</h:form>
+		</div>
+	</div>
+</body>
+</html>
